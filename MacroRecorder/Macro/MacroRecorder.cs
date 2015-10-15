@@ -43,8 +43,11 @@ namespace MacroRecorder.Macro
         DateTime delayBegin = DateTime.Now;
         bool ThreadRunning = false;
         bool ThreadExited = true;
-        bool AcceptMouse = false;
-        bool AcceptKeyboard = false;
+        bool AcceptMouseMovement = false;
+        bool PopulateInternalEventList = true;
+
+        bool RecordKeyboard = false;
+        bool RecordMouse = false;
 
         HookCallback KBCallback;
         HookCallback MCallback;
@@ -60,6 +63,13 @@ namespace MacroRecorder.Macro
         {
             KBCallback = new HookCallback(KeyboardEventCallback);
             MCallback = new HookCallback(MouseEventCallback);
+        }
+
+        public MRecorder(bool _populateinternaleventlist)
+        {
+            KBCallback = new HookCallback(KeyboardEventCallback);
+            MCallback = new HookCallback(MouseEventCallback);
+            PopulateInternalEventList = _populateinternaleventlist;
         }
 
         public void Remove(IMacroEvent mEvent)
@@ -81,36 +91,50 @@ namespace MacroRecorder.Macro
 
         public void StopRecording()
         {
-            ThreadRunning = false;
+            if (ThreadRunning)
+            {
+                ThreadRunning = false;
+            }
+            else
+            {
+                if (RecordKeyboard)
+                    WinApi.UnhookWindowsHookEx(KeyboardHook);
+                if (RecordMouse)
+                    WinApi.UnhookWindowsHookEx(MouseHook);
+                ThreadExited = true;
+            }
         }
-        public void StartRecording(bool recordKeyboard, bool recordMouse)
+        public void StartRecording(bool _recordKeyboard, bool _recordMouse)
         {
             if(ThreadExited)
             {
-                if(recordKeyboard)
+                RecordKeyboard = _recordKeyboard;
+                RecordMouse = _recordMouse;
+                if (RecordKeyboard)
                     KeyboardHook = WinApi.SetWindowsHookEx(13, KBCallback, IntPtr.Zero, 0);
-                if(recordMouse)
+                if (RecordMouse)
                     MouseHook = WinApi.SetWindowsHookEx(14, MCallback, IntPtr.Zero, 0);
-                ThreadRunning = true;
                 ThreadExited = false;
-                AcceptKeyboard = false;
-                AcceptMouse = false;
-                threadTask = new Thread(() =>
+                if (RecordMouse)
                 {
-                    delayBegin = DateTime.Now;
-                    while(ThreadRunning)
+                    ThreadRunning = true;
+                    AcceptMouseMovement = false;
+                    threadTask = new Thread(() =>
                     {
-                        Thread.Sleep(1);
-                        AcceptKeyboard = true;
-                        AcceptMouse = true;
-                    }
-                    ThreadExited = true;
-                    if(recordKeyboard)
-                        WinApi.UnhookWindowsHookEx(KeyboardHook);
-                    if(recordMouse)
-                        WinApi.UnhookWindowsHookEx(MouseHook);
-                });
-                threadTask.Start();
+                        delayBegin = DateTime.Now;
+                        while (ThreadRunning)
+                        {
+                            Thread.Sleep(10);
+                            AcceptMouseMovement = true;
+                        }
+                        if (RecordKeyboard)
+                            WinApi.UnhookWindowsHookEx(KeyboardHook);
+                        if (RecordMouse)
+                            WinApi.UnhookWindowsHookEx(MouseHook);
+                        ThreadExited = true;
+                    });
+                    threadTask.Start();
+                }
             }
         }
         public void ClearList()
@@ -124,19 +148,26 @@ namespace MacroRecorder.Macro
 
         private IntPtr MouseEventCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if(!(nCode < 0) && AcceptMouse)
+            if(!(nCode < 0))
             {
                 lock(this)
                 {
                     eMouseButton button = (eMouseButton)wParam;
+                    if(button == eMouseButton.MOVE && !AcceptMouseMovement)
+                        return WinApi.CallNextHookEx(MouseHook, nCode, wParam, lParam);
+
                     MouseEvent eventData = (MouseEvent)Marshal.PtrToStructure(lParam, typeof(MouseEvent));
                     DateTime cTime = DateTime.Now;
                     int delay = (cTime - delayBegin).Milliseconds;
 
                     MacroEvent_Delay dEvent = new MacroEvent_Delay(delay);
                     MacroEvent_Mouse mEvent = new MacroEvent_Mouse(eventData, button);
-                    EventList.Add(dEvent);
-                    EventList.Add(mEvent);
+
+                    if (PopulateInternalEventList)
+                    {
+                        EventList.Add(dEvent);
+                        EventList.Add(mEvent);
+                    }
 
                     if (OnEvent != null)
                     {
@@ -144,7 +175,7 @@ namespace MacroRecorder.Macro
                         OnEvent(mEvent);
                     }
 
-                    AcceptMouse = false;
+                    AcceptMouseMovement = false;
                     delayBegin = cTime;
                 }
             }
@@ -154,7 +185,7 @@ namespace MacroRecorder.Macro
         private IntPtr KeyboardEventCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
             eKeyboardEvent eKB = (eKeyboardEvent)wParam;
-            if(!(nCode < 0) && AcceptKeyboard && (eKB == eKeyboardEvent.KeyDown || eKB == eKeyboardEvent.KeyUp))
+            if(!(nCode < 0) && (eKB == eKeyboardEvent.KeyDown || eKB == eKeyboardEvent.KeyUp))
             {
                 lock (this)
                 {
@@ -164,16 +195,18 @@ namespace MacroRecorder.Macro
 
                     MacroEvent_Delay dEvent = new MacroEvent_Delay(delay);
                     MacroEvent_Keyboard kEvent = new MacroEvent_Keyboard(eKB, kbEvent);
-                    EventList.Add(dEvent);
-                    EventList.Add(kEvent);
+
+                    if (PopulateInternalEventList)
+                    {
+                        EventList.Add(dEvent);
+                        EventList.Add(kEvent);
+                    }
 
                     if (OnEvent != null)
                     {
                         OnEvent(dEvent);
                         OnEvent(kEvent);
                     }
-
-                    AcceptKeyboard = false;
                     delayBegin = cTime;
                 }
             }

@@ -22,8 +22,9 @@ namespace MacroRecorder.Forms
     /// </summary>
     public partial class MainWindow : Form
     {
-        MRecorder Recorder = new MRecorder();
+        MRecorder Recorder = new MRecorder(false);
         List<IMacroEvent> CurrentMacro = new List<IMacroEvent>();
+        List<ListViewItem> SelectedItems = new List<ListViewItem>();
         public MainWindow()
         {
             InitializeComponent();
@@ -33,7 +34,6 @@ namespace MacroRecorder.Forms
         void ClearCurrent()
         {
             CurrentMacro.Clear();
-            Recorder.ClearList();
             lvEvents.Items.Clear();
         }
 
@@ -212,6 +212,71 @@ namespace MacroRecorder.Forms
             catch
             {
                 MessageBox.Show("Failed to load macro.");
+            }
+        }
+
+        private void selectItemsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lvEvents.SelectedItems.Count > 0)
+            {
+                lvEvents.ContextMenuStrip = cmEdit;
+                foreach (ListViewItem i in lvEvents.SelectedItems)
+                {
+                    i.ForeColor = Color.Red;
+                    SelectedItems.Add(i);
+                }
+            }
+        }
+
+        private void deselectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           
+        }
+
+        private void allToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem i in SelectedItems)
+            {
+                i.ForeColor = Color.Black;
+            }
+            SelectedItems.Clear();
+            lvEvents.ContextMenuStrip = cmMacro;
+        }
+
+        private void selectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lvEvents.SelectedItems.Count > 0)
+            {
+                foreach (ListViewItem i in lvEvents.SelectedItems)
+                {
+                    if(SelectedItems.Contains(i))
+                    {
+                        i.ForeColor = Color.Black;
+                        SelectedItems.Remove(i);
+                    }
+                }
+                if(SelectedItems.Count < 1)
+                {
+                    lvEvents.ContextMenuStrip = cmMacro;
+                }
+            }
+        }
+
+        private void moveHereToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lvEvents.SelectedItems.Count > 0)
+            {
+                int moveIndex = lvEvents.SelectedIndices[0];
+                for (int i = SelectedItems.Count-1; i >= 0; i-- )
+                {
+                    IMacroEvent mEvent = (IMacroEvent)SelectedItems[i].Tag;
+
+                    lvEvents.Items.Remove(SelectedItems[i]);
+                    CurrentMacro.Remove(mEvent);
+
+                    lvEvents.Items.Insert(moveIndex, SelectedItems[i]);
+                    CurrentMacro.Insert(moveIndex, mEvent);
+                }
             }
         }
     }
