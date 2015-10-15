@@ -14,16 +14,15 @@ namespace MacroRecorder.Macro.Events
     {
         public eKeyboardEvent EventType;
         public KeyboardEvent Event;
+
+        INPUT[] InputList = new INPUT[1];
+        int inputSize = 0;
         public MacroEvent_Keyboard(eKeyboardEvent _eType, KeyboardEvent _event)
         {
             EventType = _eType;
             Event = _event;
-        }
-        public void ExecuteEvent()
-        {
-            uint keyState = Convert.ToUInt32(EventType == eKeyboardEvent.KeyDown ? 0 : 0x2);
-            INPUT[] InputList = new INPUT[1];
 
+            uint keyState = Convert.ToUInt32(EventType == eKeyboardEvent.KeyDown ? 0 : 0x2);
             INPUT keyInput = new INPUT();
             keyInput.type = 1;
             KEYBDINPUT kbInput = new KEYBDINPUT();
@@ -36,8 +35,11 @@ namespace MacroRecorder.Macro.Events
             keyInput.iUinion.ki = kbInput;
 
             InputList[0] = keyInput;
-
-            WinApi.SendInput(1, InputList, Marshal.SizeOf(InputList[0]));
+            inputSize = Marshal.SizeOf(InputList[0]);
+        }
+        public void ExecuteEvent()
+        {
+            WinApi.SendInput(1, InputList, inputSize);
         }
 
         public string GetEventString()

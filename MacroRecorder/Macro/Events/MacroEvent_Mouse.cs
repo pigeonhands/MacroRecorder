@@ -12,29 +12,24 @@ namespace MacroRecorder.Macro.Events
     {
         public MouseEvent Event;
         public eMouseButton Button;
-
+        INPUT[] InputList = new INPUT[1];
+        int inputSize = 0;
         public MacroEvent_Mouse(MouseEvent _event, eMouseButton _button)
         {
             Event = _event;
             Button = _button;
-        }
-
-        public void ExecuteEvent()
-        {
-            INPUT[] InputList = new INPUT[1];
 
             INPUT keyInput = new INPUT();
             keyInput.type = 0;
             MOUSEINPUT mInput = new MOUSEINPUT();
 
-            eMouseCommand command = eMouseCommand.Move;// | eMouseCommand.VrtDesk
-            if (Button == eMouseButton.LDOWN) command |= eMouseCommand.LDown;
-            if (Button == eMouseButton.LUP) command |= eMouseCommand.LUp;
-            if (Button == eMouseButton.RDOWN) command |= eMouseCommand.RDown;
-            if (Button == eMouseButton.RUP) command |= eMouseCommand.RUp;
-            //if (Button == eMouseButton.MOVE) command |= eMouseCommand.Move;
-            if (Button == eMouseButton.MWheel) command |= eMouseCommand.MWheel;
-            if (Button == eMouseButton.MHWheel) command |= eMouseCommand.HWHeel;
+            eMouseCommand command = eMouseCommand.Move;
+            if (Button == eMouseButton.LDOWN) command = eMouseCommand.LDown;
+            if (Button == eMouseButton.LUP) command = eMouseCommand.LUp;
+            if (Button == eMouseButton.RDOWN) command = eMouseCommand.RDown;
+            if (Button == eMouseButton.RUP) command = eMouseCommand.RUp;
+            if (Button == eMouseButton.MWheel) command = eMouseCommand.MWheel;
+            if (Button == eMouseButton.MHWheel) command = eMouseCommand.HWHeel;
 
             mInput.dx = 0;
             mInput.dy = 0;
@@ -46,8 +41,15 @@ namespace MacroRecorder.Macro.Events
             keyInput.iUinion.mi = mInput;
 
             InputList[0] = keyInput;
+
+            inputSize = Marshal.SizeOf(InputList[0]);
+        }
+
+        public void ExecuteEvent()
+        {
             WinApi.SetCursorPos(Event.Location.X, Event.Location.Y);
-            WinApi.SendInput(1, InputList, Marshal.SizeOf(InputList[0]));
+            if(Button != eMouseButton.MOVE)
+                WinApi.SendInput(1, InputList, inputSize);
         }
 
 

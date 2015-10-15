@@ -48,8 +48,11 @@ namespace MacroRecorder.Macro
         bool AcceptMouseMovement = false;
         bool PopulateInternalEventList = true;
 
+        bool mouseDelayEnabled = false;
+
         bool RecordKeyboard = false;
         bool RecordMouse = false;
+
 
         HookCallback KBCallback;
         HookCallback MCallback;
@@ -110,6 +113,7 @@ namespace MacroRecorder.Macro
         {
             if(ThreadExited)
             {
+                mouseDelayEnabled = false;
                 RecordKeyboard = _recordKeyboard;
                 RecordMouse = _recordMouse;
                 if (RecordKeyboard)
@@ -117,10 +121,11 @@ namespace MacroRecorder.Macro
                 if (RecordMouse)
                     MouseHook = WinApi.SetWindowsHookEx(14, MCallback, IntPtr.Zero, 0);
                 ThreadExited = false;
-                AcceptMouseMovement = false;
+                AcceptMouseMovement = true;
                 delayBegin = DateTime.Now;
                 if (CaptureMouseMovements && MouseMovementCaptureDelay > 0)
                 {
+                    mouseDelayEnabled = true;
                     ThreadRunning = true;
                     threadTask = new Thread(() =>
                     {
@@ -155,7 +160,7 @@ namespace MacroRecorder.Macro
                 lock(this)
                 {
                     eMouseButton button = (eMouseButton)wParam;
-                    if(button == eMouseButton.MOVE && !AcceptMouseMovement)
+                    if (button == eMouseButton.MOVE && !AcceptMouseMovement && mouseDelayEnabled)
                         return WinApi.CallNextHookEx(MouseHook, nCode, wParam, lParam);
 
                     MouseEvent eventData = (MouseEvent)Marshal.PtrToStructure(lParam, typeof(MouseEvent));
@@ -177,6 +182,7 @@ namespace MacroRecorder.Macro
                         OnEvent(mEvent);
                     }
 
+                    
                     AcceptMouseMovement = false;
                     delayBegin = cTime;
                 }
