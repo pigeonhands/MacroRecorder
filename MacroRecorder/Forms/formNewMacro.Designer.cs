@@ -151,12 +151,12 @@
             // tbMouseSmothness
             // 
             this.tbMouseSmothness.Location = new System.Drawing.Point(6, 36);
-            this.tbMouseSmothness.Maximum = 100;
+            this.tbMouseSmothness.Maximum = 1000;
             this.tbMouseSmothness.Minimum = 1;
             this.tbMouseSmothness.Name = "tbMouseSmothness";
             this.tbMouseSmothness.Size = new System.Drawing.Size(217, 45);
             this.tbMouseSmothness.TabIndex = 0;
-            this.tbMouseSmothness.Value = 50;
+            this.tbMouseSmothness.Value = 500;
             this.tbMouseSmothness.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
             // lblSmoothness
@@ -164,9 +164,9 @@
             this.lblSmoothness.AutoSize = true;
             this.lblSmoothness.Location = new System.Drawing.Point(105, 63);
             this.lblSmoothness.Name = "lblSmoothness";
-            this.lblSmoothness.Size = new System.Drawing.Size(19, 13);
+            this.lblSmoothness.Size = new System.Drawing.Size(25, 13);
             this.lblSmoothness.TabIndex = 1;
-            this.lblSmoothness.Text = "50";
+            this.lblSmoothness.Text = "500";
             // 
             // cbCaptureMouseMovement
             // 

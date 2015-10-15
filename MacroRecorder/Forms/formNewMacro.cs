@@ -48,7 +48,7 @@ namespace MacroRecorder.Forms
                 RecordKeyboard = true;
             }
             DelayBeforeRecord = (int)nudRecordDelay.Value * 100;
-            MouseMovementCaptureDelay = (tbMouseSmothness.Maximum + 1) - tbMouseSmothness.Value;
+            MouseMovementCaptureDelay = tbMouseSmothness.Maximum - tbMouseSmothness.Value;
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }
 

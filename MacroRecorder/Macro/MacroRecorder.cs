@@ -118,12 +118,12 @@ namespace MacroRecorder.Macro
                     MouseHook = WinApi.SetWindowsHookEx(14, MCallback, IntPtr.Zero, 0);
                 ThreadExited = false;
                 AcceptMouseMovement = false;
-                if (CaptureMouseMovements)
+                delayBegin = DateTime.Now;
+                if (CaptureMouseMovements && MouseMovementCaptureDelay > 0)
                 {
                     ThreadRunning = true;
                     threadTask = new Thread(() =>
                     {
-                        delayBegin = DateTime.Now;
                         while (ThreadRunning)
                         {
                             Thread.Sleep(MouseMovementCaptureDelay);
