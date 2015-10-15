@@ -12,8 +12,8 @@ namespace MacroRecorder.Macro.Events
 {
     class MacroEvent_Keyboard : IMacroEvent
     {
-        eKeyboardEvent EventType;
-        KeyboardEvent Event;
+        public eKeyboardEvent EventType;
+        public KeyboardEvent Event;
         public MacroEvent_Keyboard(eKeyboardEvent _eType, KeyboardEvent _event)
         {
             EventType = _eType;

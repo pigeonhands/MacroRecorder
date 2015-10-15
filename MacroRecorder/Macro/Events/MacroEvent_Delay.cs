@@ -9,7 +9,7 @@ namespace MacroRecorder.Macro.Events
 {
     public class MacroEvent_Delay : IMacroEvent
     {
-        int DelayMS = 0;
+        public int DelayMS = 0;
         public MacroEvent_Delay(int ms)
         {
             DelayMS = ms;

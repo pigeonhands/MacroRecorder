@@ -11,6 +11,10 @@ using System.Windows.Forms;
 
 namespace MacroRecorder.Macro
 {
+    /// <summary>
+    /// Made By BahNahNah
+    /// uid=2388291
+    /// </summary>
     public class MRecorder
     {
         #region " Delegates "

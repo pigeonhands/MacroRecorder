@@ -10,8 +10,8 @@ namespace MacroRecorder.Macro.Events
 {
     class MacroEvent_Mouse : IMacroEvent
     {
-        MouseEvent Event;
-        eMouseButton Button;
+        public MouseEvent Event;
+        public eMouseButton Button;
 
         public MacroEvent_Mouse(MouseEvent _event, eMouseButton _button)
         {

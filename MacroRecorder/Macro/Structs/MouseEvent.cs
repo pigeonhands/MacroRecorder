@@ -37,8 +37,16 @@ namespace MacroRecorder.Macro.Structs
     {
         int _X;
         int _Y;
-        public int X { get { return _X; } }
-        public int Y { get { return _Y; } }
+        public int X 
+        { 
+            get { return _X; }
+            set { _X = value; }
+        }
+        public int Y 
+        { 
+            get { return _Y; }
+            set { _Y = value; }
+        }
         public override string ToString()
         {
             return string.Format("({0},{1})", X, Y);
