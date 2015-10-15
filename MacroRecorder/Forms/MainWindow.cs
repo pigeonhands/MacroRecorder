@@ -66,6 +66,9 @@ namespace MacroRecorder.Forms
                 if (newMacro.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                     return;
 
+                Recorder.MouseMovementCaptureDelay = newMacro.MouseMovementCaptureDelay;
+                Recorder.CaptureMouseMovements = newMacro.CaptureMouseMovements;
+
                 using(formMacroNotify mn = new formMacroNotify(Recorder, newMacro.RecordKeyboard, newMacro.RecordMouse, newMacro.DelayBeforeRecord))
                 {
                     ClearCurrent();

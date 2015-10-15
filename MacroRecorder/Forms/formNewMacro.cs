@@ -15,6 +15,8 @@ namespace MacroRecorder.Forms
         public bool RecordMouse { get; private set; }
         public bool RecordKeyboard { get; private set; }
         public int DelayBeforeRecord { get; private set; }
+        public int MouseMovementCaptureDelay { get; private set; }
+        public bool CaptureMouseMovements { get; private set; }
 
         public formNewMacro()
         {
@@ -28,8 +30,10 @@ namespace MacroRecorder.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
+            CaptureMouseMovements = cbCaptureMouseMovement.Checked;
             if(rbRecordKeyboard.Checked)
             {
+                CaptureMouseMovements = false;
                 RecordKeyboard = true;
                 RecordMouse = false;
             }
@@ -44,7 +48,18 @@ namespace MacroRecorder.Forms
                 RecordKeyboard = true;
             }
             DelayBeforeRecord = (int)nudRecordDelay.Value * 100;
+            MouseMovementCaptureDelay = (tbMouseSmothness.Maximum + 1) - tbMouseSmothness.Value;
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            lblSmoothness.Text = tbMouseSmothness.Value.ToString();
+        }
+
+        private void rbRecordKeyboard_CheckedChanged(object sender, EventArgs e)
+        {
+            gbMouseSettings.Enabled = !rbRecordKeyboard.Checked;
         }
     }
 }

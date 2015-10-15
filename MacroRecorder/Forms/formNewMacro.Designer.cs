@@ -29,16 +29,23 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.rbRecordMouse = new System.Windows.Forms.RadioButton();
-            this.rbRecordKeyboard = new System.Windows.Forms.RadioButton();
             this.rbRecordBoth = new System.Windows.Forms.RadioButton();
+            this.rbRecordKeyboard = new System.Windows.Forms.RadioButton();
+            this.rbRecordMouse = new System.Windows.Forms.RadioButton();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.nudRecordDelay = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
+            this.nudRecordDelay = new System.Windows.Forms.NumericUpDown();
+            this.gbMouseSettings = new System.Windows.Forms.GroupBox();
+            this.tbMouseSmothness = new System.Windows.Forms.TrackBar();
+            this.lblSmoothness = new System.Windows.Forms.Label();
+            this.cbCaptureMouseMovement = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudRecordDelay)).BeginInit();
+            this.gbMouseSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbMouseSmothness)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -53,26 +60,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Record";
             // 
-            // rbRecordMouse
-            // 
-            this.rbRecordMouse.AutoSize = true;
-            this.rbRecordMouse.Location = new System.Drawing.Point(6, 19);
-            this.rbRecordMouse.Name = "rbRecordMouse";
-            this.rbRecordMouse.Size = new System.Drawing.Size(57, 17);
-            this.rbRecordMouse.TabIndex = 0;
-            this.rbRecordMouse.Text = "Mouse";
-            this.rbRecordMouse.UseVisualStyleBackColor = true;
-            // 
-            // rbRecordKeyboard
-            // 
-            this.rbRecordKeyboard.AutoSize = true;
-            this.rbRecordKeyboard.Location = new System.Drawing.Point(80, 19);
-            this.rbRecordKeyboard.Name = "rbRecordKeyboard";
-            this.rbRecordKeyboard.Size = new System.Drawing.Size(70, 17);
-            this.rbRecordKeyboard.TabIndex = 1;
-            this.rbRecordKeyboard.Text = "Keyboard";
-            this.rbRecordKeyboard.UseVisualStyleBackColor = true;
-            // 
             // rbRecordBoth
             // 
             this.rbRecordBoth.AutoSize = true;
@@ -85,9 +72,30 @@
             this.rbRecordBoth.Text = "Both";
             this.rbRecordBoth.UseVisualStyleBackColor = true;
             // 
+            // rbRecordKeyboard
+            // 
+            this.rbRecordKeyboard.AutoSize = true;
+            this.rbRecordKeyboard.Location = new System.Drawing.Point(80, 19);
+            this.rbRecordKeyboard.Name = "rbRecordKeyboard";
+            this.rbRecordKeyboard.Size = new System.Drawing.Size(70, 17);
+            this.rbRecordKeyboard.TabIndex = 1;
+            this.rbRecordKeyboard.Text = "Keyboard";
+            this.rbRecordKeyboard.UseVisualStyleBackColor = true;
+            this.rbRecordKeyboard.CheckedChanged += new System.EventHandler(this.rbRecordKeyboard_CheckedChanged);
+            // 
+            // rbRecordMouse
+            // 
+            this.rbRecordMouse.AutoSize = true;
+            this.rbRecordMouse.Location = new System.Drawing.Point(6, 19);
+            this.rbRecordMouse.Name = "rbRecordMouse";
+            this.rbRecordMouse.Size = new System.Drawing.Size(57, 17);
+            this.rbRecordMouse.TabIndex = 0;
+            this.rbRecordMouse.Text = "Mouse";
+            this.rbRecordMouse.UseVisualStyleBackColor = true;
+            // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(87, 132);
+            this.button1.Location = new System.Drawing.Point(87, 221);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
@@ -106,6 +114,15 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Delay before record";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(200, 22);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(12, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "s";
+            // 
             // nudRecordDelay
             // 
             this.nudRecordDelay.Location = new System.Drawing.Point(6, 19);
@@ -118,20 +135,66 @@
             this.nudRecordDelay.Size = new System.Drawing.Size(191, 20);
             this.nudRecordDelay.TabIndex = 0;
             // 
-            // label1
+            // gbMouseSettings
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(200, 22);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(12, 13);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "s";
+            this.gbMouseSettings.Controls.Add(this.label2);
+            this.gbMouseSettings.Controls.Add(this.cbCaptureMouseMovement);
+            this.gbMouseSettings.Controls.Add(this.lblSmoothness);
+            this.gbMouseSettings.Controls.Add(this.tbMouseSmothness);
+            this.gbMouseSettings.Location = new System.Drawing.Point(12, 132);
+            this.gbMouseSettings.Name = "gbMouseSettings";
+            this.gbMouseSettings.Size = new System.Drawing.Size(229, 83);
+            this.gbMouseSettings.TabIndex = 3;
+            this.gbMouseSettings.TabStop = false;
+            this.gbMouseSettings.Text = "Mouse Settings";
+            // 
+            // tbMouseSmothness
+            // 
+            this.tbMouseSmothness.Location = new System.Drawing.Point(6, 36);
+            this.tbMouseSmothness.Maximum = 100;
+            this.tbMouseSmothness.Minimum = 1;
+            this.tbMouseSmothness.Name = "tbMouseSmothness";
+            this.tbMouseSmothness.Size = new System.Drawing.Size(217, 45);
+            this.tbMouseSmothness.TabIndex = 0;
+            this.tbMouseSmothness.Value = 50;
+            this.tbMouseSmothness.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            // 
+            // lblSmoothness
+            // 
+            this.lblSmoothness.AutoSize = true;
+            this.lblSmoothness.Location = new System.Drawing.Point(105, 63);
+            this.lblSmoothness.Name = "lblSmoothness";
+            this.lblSmoothness.Size = new System.Drawing.Size(19, 13);
+            this.lblSmoothness.TabIndex = 1;
+            this.lblSmoothness.Text = "50";
+            // 
+            // cbCaptureMouseMovement
+            // 
+            this.cbCaptureMouseMovement.AutoSize = true;
+            this.cbCaptureMouseMovement.Checked = true;
+            this.cbCaptureMouseMovement.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbCaptureMouseMovement.Location = new System.Drawing.Point(14, 15);
+            this.cbCaptureMouseMovement.Name = "cbCaptureMouseMovement";
+            this.cbCaptureMouseMovement.Size = new System.Drawing.Size(146, 17);
+            this.cbCaptureMouseMovement.TabIndex = 2;
+            this.cbCaptureMouseMovement.Text = "Capure mouse movement";
+            this.cbCaptureMouseMovement.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(31, 63);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(68, 13);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Smoothness:";
             // 
             // formNewMacro
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(254, 160);
+            this.ClientSize = new System.Drawing.Size(254, 248);
+            this.Controls.Add(this.gbMouseSettings);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox1);
@@ -145,6 +208,9 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudRecordDelay)).EndInit();
+            this.gbMouseSettings.ResumeLayout(false);
+            this.gbMouseSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbMouseSmothness)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -159,5 +225,10 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown nudRecordDelay;
+        private System.Windows.Forms.GroupBox gbMouseSettings;
+        private System.Windows.Forms.Label lblSmoothness;
+        private System.Windows.Forms.TrackBar tbMouseSmothness;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox cbCaptureMouseMovement;
     }
 }
